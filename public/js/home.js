@@ -1,44 +1,6 @@
-/* add or modify.
-   change index to ident.
-   when you select Read with no ident, display the ident and the name.
-*/
-  		function readClicked(){
-        if ($("#ident").val() == "") {
-          $.ajax({
-            url: "/read",
-            type: "GET",
-            success: function(data){
-              if (!data)
-                  alert("ERROR data");
-              else {
-
-                $("#list").empty();
-               
-                for (let i=0;i<data.length;i++) {
-                   $("#list").append("<li>" + data[i].ident + " " + data[i].name + "</li>");
-                }
-                
-              }
-            },
-            dataType: "json"
-          });              
-        } else {
-          $.ajax({
-            url: "/read/" + $("#ident").val(),
-            type: "GET",
-            success: function(data){
-              if (!data)
-                  alert("ERROR data");
-              else
-                  $("#name").val(data.name);        
-            },
-            dataType: "json"
-          });   
-        }
-  		  return false;
-  		}
- 		
   		function createClicked(){
+  var file = document.querySelector('input[type=file]').files[0]; //sames as here
+      tempSrc = "/public/images/" + file.name;
           if ($("#ident").val() == "") {
             alert("ERROR");
             return false;
@@ -53,9 +15,9 @@
                 alert("ERROR");
               else
                 alert("CREATE VALID");
-            } ,     
+            } ,
             dataType: "json"
-          }); 
+          });
     		  return false;
     	}
 
@@ -64,7 +26,7 @@
           if ($("#ident").val() == "") {
             alert("ERROR");
             return false;
-          }        
+          }
           $.ajax({
           url: "/update",
           type: "PUT",
@@ -74,51 +36,34 @@
                 alert("ERROR");
               else
                 alert("UPDATE VALID");
-            } ,     
+            } ,
           dataType: "json"
-        });    
-          return false;          
+        });
+          return false;
       }
 
+  		function createImageClicked(){
+          if ($("#createImage").val() == "") {
+            alert("ERROR");
+            return false;
+          }
 
-      function deleteClicked(){
           $.ajax({
-            url: "/delete/" + Number($("#ident").val()),
-            type: "DELETE",
-            success: function(data) { 
+            url: "/createImage",
+            type: "POST",
+            data: {ident:Number($("#ident").val()), name:$("#name").val()},
+            success: function(data){
               if (!data)
-                alert("NO DELETE");
+                alert("ERROR");
               else
-                alert("GOOD DELETE");
-            } ,   
+                alert("CREATE VALID");
+            } ,
             dataType: "json"
-          });  
-          return false;             
-      }
+          });
+    		  return false;
+    	}
 
-  		$(document).ready(function(){ 
-
-        $("#name").keydown( function( event ) {
-            if ( event.which === 13 ) {
-              createClicked();
-              event.preventDefault();
-              return false;
-            }
-        });
-        
-        $("#ident").keydown( function( event ) {
-            if ( event.which === 13 ) {
-              readClicked();
-              event.preventDefault();
-              return false;
-            }
-        });
-
-  		  $("#readButton").click(readClicked);
+  		$(document).ready(function(){
         $("#createButton").click(createClicked);
         $("#updateButton").click(updateClicked);
-        $("#deleteButton").click(deleteClicked);
-
-  		});  		
-    
-
+  		});
